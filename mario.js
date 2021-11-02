@@ -46,28 +46,28 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
 
     const maps = [
         [
-            '                                                 ',
-            '                                                 ',
-            '                                                 ',
-            '                                                 ',
-            '                                                 ',
-            '     %   =*=%=                ==                 ',
-            '                         ==                      ',
-            '                                               -+',
-            '            ^        ^   ^           ^         ()',
-            '==============================   =========   ====',
+            '                                                      ',
+            '                                                      ',
+            '                                                      ',
+            '                                                      ',
+            '                                      ==              ',
+            '     %   =*=%=                    ==                  ',
+            '                              ==                      ',
+            '                                                    -+',
+            '            ^        ^   ^                ^         ()',
+            '==============================             ====   ====',
           ],
           [
-            '£                                              £',
-            '£                                              £',
-            '£                                              £',
-            '£                                              £',
-            '£                                              £',
-            '£        @@#@@                  x  x           £',
-            '£                            x  x  x           £',
-            '£                         x  x  x  x  x      -+£',
-            '£               z   z  x  x  xz x  x  x      ()£',
-            '!!!!!!!!!!!!!!!!!!!!!!!!! !! !! !! !! !!  !!!!!!',
+            '£                                                    £',
+            '£                                                    £',
+            '£                                                    £',
+            '£                                                    £',
+            '£                                      x             £',
+            '£        @@&@@                     x   x             £',
+            '£                              x   x   x             £',
+            '£                          x   x   x   x   x       -+£',
+            '£               z   z  x   x   xz  x   x   x       ()£',
+            '!!!!!!!!!!!!!!!!!!!!!!!!!  !!  !!  !!  !!  !!    !!!!!',
           ]
     ]
   
@@ -97,10 +97,10 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
 
   const gameLevel = addLevel(maps[level], levelCfg)
 
-  // Setting a running score across levels
+  // Setting a running score across levels top of screen
   const scoreLabel = add([
-    text(score),
-    pos(30, 6),
+    text('Score ' + score),
+    pos(180, 6),
     layer('ui'),
     {
       value: score,
@@ -108,7 +108,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
   ])
 
   // increase level indicator
-  add([text('level ' + parseInt(level + 1)), pos(40, 6)])
+  add([text('Level ' + parseInt(level + 1)), pos(250, 6)])
 
   // logic for making player big 
   function big() {
@@ -175,11 +175,11 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
     player.biggify(6)
   })
 
-  // player gets a coin, increase running score
+  // player gets a coin, updates running score
   player.collides('coin', (c) => {
     destroy(c)
     scoreLabel.value++
-    scoreLabel.text = scoreLabel.value
+    scoreLabel.text = 'Score ' + scoreLabel.value
   })
 
   // enemy speed
@@ -240,7 +240,12 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
 
 // if player falls or dies
 scene('lose', ({ score }) => {
-    add([text(score, 32), origin('center'), pos(width()/2, height()/ 2)])
+    add([text('Score: ' + score, 18), origin('center'), pos(width()/2, height()/ 2)])
+    if (score < 5) {
+        add([text('Better luck next time!', 14), origin('center'), pos(width()/2, height()/ 3)])
+    } else {
+        add([text('Nicely done!', 14), origin('center'), pos(width()/2, height()/ 3)])
+    }
   })
 
 start('game', { level: 0, score: 0})
