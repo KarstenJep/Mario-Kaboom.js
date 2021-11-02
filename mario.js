@@ -40,7 +40,7 @@ loadSprite('blue-evil-shroom', 'SvV4ueD.png')
 loadSprite('blue-surprise', 'RMqCc1G.png')
 
   // this function wraps game logic/settings
-  scene('game', () => {
+  scene('game', ({level, score}) => {
     layers(['bg', 'obj', 'ui'], 'obj')
 
     const maps = [
@@ -81,7 +81,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
 
   }
 
-  const gameLevel = addLevel(maps, levelCfg)
+  const gameLevel = addLevel(maps[level], levelCfg)
 
   // Setting a running score across levels
   const scoreLabel = add([
@@ -136,6 +136,11 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
     origin('bot')
   ])
 
+  // mushroom speed
+  action('mushroom', (m) => {
+    m.move(20, 0)
+  })
+
   // player headbumps surpise block
   player.on("headbump", (obj) => {
     if (obj.is('coin-surprise')) {
@@ -163,6 +168,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
     scoreLabel.text = scoreLabel.value
   })
 
+  // enemy speed
   action('dangerous', (d) => {
     d.move(-ENEMY_SPEED, 0)
   })
@@ -223,4 +229,4 @@ scene('lose', ({ score }) => {
     add([text(score, 32), origin('center'), pos(width()/2, height()/ 2)])
   })
 
-start('game')
+start('game', { level: 0, score: 0})
