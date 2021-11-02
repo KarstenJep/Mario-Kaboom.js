@@ -7,6 +7,18 @@ kaboom({
     clearColor: [0, 0, 0, 1],
   })
 
+// Speed identifiers
+const MOVE_SPEED = 120
+const JUMP_FORCE = 360
+const BIG_JUMP_FORCE = 550
+let CURRENT_JUMP_FORCE = JUMP_FORCE
+const FALL_DEATH = 400
+const ENEMY_SPEED = 20
+
+// Game logic
+
+let isJumping = true
+
 // Loading root url with extensions for game images
 loadRoot('https://i.imgur.com/')
 loadSprite('coin', 'wbKxhcd.png')
@@ -40,7 +52,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
             '                                                 ',
             '     %   =*=%=                ==                 ',
             '                                                 ',
-            '                                              -+ ',
+            '                                               -+',
             '            ^        ^   ^           ^         ()',
             '==============================   =========   ====',
           ],
@@ -60,7 +72,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
     '-': [sprite('pipe-top-left'), solid(), scale(0.5), 'pipe'],
     '+': [sprite('pipe-top-right'), solid(), scale(0.5), 'pipe'],
     '^': [sprite('evil-shroom'), solid(), 'dangerous'],
-    '#': [sprite('mushroom'), solid(), 'mushroom', body()],
+    '#': [sprite('mushroom'), solid(), 'mushroom', body()], // body adds gravity
     '!': [sprite('blue-block'), solid(), scale(0.5)],
     '£': [sprite('blue-brick'), solid(), scale(0.5)],
     'z': [sprite('blue-evil-shroom'), solid(), scale(0.5), 'dangerous'],
@@ -81,7 +93,10 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
     }
   ])
 
-  // Makes mario big when he gets a mushroom
+  // increase level indicator
+  add([text('level ' + parseInt(level + 1)), pos(40, 6)])
+
+  // logic for making player big 
   function big() {
     let timer = 0
     let isBig = false
@@ -112,7 +127,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
     }
   }
 
-  // Setting mario
+  // Setting mario/player
   const player = add([
     sprite('mario'), solid(),
     pos(30, 0),
@@ -121,8 +136,66 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
     origin('bot')
   ])
 
+  // player headbumps surpise block
+  player.on("headbump", (obj) => {
+    if (obj.is('coin-surprise')) {
+      gameLevel.spawn('$', obj.gridPos.sub(0, 1))
+      destroy(obj)
+      gameLevel.spawn('}', obj.gridPos.sub(0,0))
+    }
+    if (obj.is('mushroom-surprise')) {
+      gameLevel.spawn('#', obj.gridPos.sub(0, 1))
+      destroy(obj)
+      gameLevel.spawn('}', obj.gridPos.sub(0,0))
+    }
+  })
 
-  // Keyboard settings for  making Mario move
+  // player gets a mushroom, 6 is amount of seconds 
+  player.collides('mushroom', (m) => {
+    destroy(m)
+    player.biggify(6)
+  })
+
+  // player gets a coin, increase running score
+  player.collides('coin', (c) => {
+    destroy(c)
+    scoreLabel.value++
+    scoreLabel.text = scoreLabel.value
+  })
+
+  action('dangerous', (d) => {
+    d.move(-ENEMY_SPEED, 0)
+  })
+
+  // player encounters dangerous obj
+  player.collides('dangerous', (d) => {
+    if (isJumping) {
+      destroy(d)
+    } else {
+      go('lose', { score: scoreLabel.value})
+    }
+  })
+
+  // player falls
+  player.action(() => {
+    camPos(player.pos)//camera position
+    if (player.pos.y >= FALL_DEATH) {
+      go('lose', { score: scoreLabel.value})
+    }
+  })
+
+  // player drops into pipe
+  player.collides('pipe', () => {
+    keyPress('down', () => {
+      go('game', {
+        level: (level + 1) % maps.length,
+        score: scoreLabel.value
+      })
+    })
+  })
+
+
+  // Keyboard settings for making Mario move
   keyDown('left', () => {
     player.move(-MOVE_SPEED, 0)
   })
@@ -145,4 +218,9 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
   })
 })
 
-  start('game')
+// if player falls or dies
+scene('lose', ({ score }) => {
+    add([text(score, 32), origin('center'), pos(width()/2, height()/ 2)])
+  })
+
+start('game')
