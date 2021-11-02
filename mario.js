@@ -27,7 +27,7 @@ loadSprite('blue-steel', 'gqVoI2b.png')
 loadSprite('blue-evil-shroom', 'SvV4ueD.png')
 loadSprite('blue-surprise', 'RMqCc1G.png')
 
-
+  // this function wraps game logic/settings
   scene('game', () => {
     layers(['bg', 'obj', 'ui'], 'obj')
 
@@ -71,6 +71,78 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
 
   const gameLevel = addLevel(maps, levelCfg)
 
+  // Setting a running score across levels
+  const scoreLabel = add([
+    text(score),
+    pos(30, 6),
+    layer('ui'),
+    {
+      value: score,
+    }
+  ])
+
+  // Makes mario big when he gets a mushroom
+  function big() {
+    let timer = 0
+    let isBig = false
+    return {
+      update() {
+        if (isBig) {
+          CURRENT_JUMP_FORCE = BIG_JUMP_FORCE
+          timer -= dt() // dt is a kaboom method (delta time)
+          if (timer <= 0) {
+            this.smallify()
+          }
+        }
+      },
+      isBig() {
+        return isBig
+      },
+      smallify() {
+        this.scale = vec2(1) //scale down
+        CURRENT_JUMP_FORCE = JUMP_FORCE
+        timer = 0
+        isBig = false
+      },
+      biggify(time) {
+        this.scale = vec2(2) //scale up
+        timer = time
+        isBig = true     
+      }
+    }
+  }
+
+  // Setting mario
+  const player = add([
+    sprite('mario'), solid(),
+    pos(30, 0),
+    body(),
+    big(),
+    origin('bot')
+  ])
+
+
+  // Keyboard settings for  making Mario move
+  keyDown('left', () => {
+    player.move(-MOVE_SPEED, 0)
+  })
+
+  keyDown('right', () => {
+    player.move(MOVE_SPEED, 0)
+  })
+
+  player.action(() => {
+    if(player.grounded()) {
+      isJumping = false
+    }
+  })
+
+  keyPress('space', () => {
+    if (player.grounded()) {
+      isJumping = true
+      player.jump(CURRENT_JUMP_FORCE)
+    }
+  })
 })
 
   start('game')
