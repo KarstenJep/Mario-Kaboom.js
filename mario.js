@@ -7,13 +7,14 @@ kaboom({
     clearColor: [0, 0, 0, 1],
   })
 
+
 // Speed identifiers
 const MOVE_SPEED = 120
 const JUMP_FORCE = 360
 const BIG_JUMP_FORCE = 550
 let CURRENT_JUMP_FORCE = JUMP_FORCE
 const FALL_DEATH = 400
-const ENEMY_SPEED = 20
+const ENEMY_SPEED = 30
 
 // Game logic
 
@@ -46,29 +47,49 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
 
     const maps = [
         [
-            '                                                      ',
-            '                                                      ',
-            '                                                      ',
-            '                                                      ',
-            '                                      ==              ',
-            '     %   =*=%=                    ==                  ',
-            '                              ==                      ',
-            '                                                    -+',
-            '            ^        ^   ^                ^         ()',
-            '==============================             ====   ====',
+            '                                                           ',
+            '                                                           ',
+            '                                                           ',
+            '                                                           ',
+            '                                          ==               ',
+            '     %   =*=%=                       ==                    ',
+            '                                ==                         ',
+            '                                                         -+',
+            '            ^        ^   ^                               ()',
+            '==============================                 ====    ====',
           ],
           [
-            '£                                                    £',
-            '£                                                    £',
-            '£                                                    £',
-            '£                                                    £',
-            '£                                      x             £',
-            '£        @@&@@                     x   x             £',
-            '£                              x   x   x             £',
-            '£                          x   x   x   x   x       -+£',
-            '£               z   z  x   x   xz  x   x   x       ()£',
-            '!!!!!!!!!!!!!!!!!!!!!!!!!  !!  !!  !!  !!  !!    !!!!!',
+            '£                                                         £',
+            '£                                                         £',
+            '£                                                         £',
+            '£                                                         £',
+            '£                                          x              £',
+            '£        @@&@@                        x    x              £',
+            '£                                x    x    x              £',
+            '£                           x    x    x    x   x        -+£',
+            '£               z   z   x   x    xz   x    x   x        ()£',
+            '!!!!!!!!!!!!!!!!!!!!!!!!!   !!   !!   !!   !!  !!    !!!!!!',
+          ],
+          [
+            '£                                                       -+£',
+            '£                                                       ()£',
+            '£                     @                               xxxx£',
+            '£                                                         £',
+            '£                         z                               £',
+            '£                xx  xxxx                                 £',
+            '£                            xxx       &          xxx     £',
+            '£         @x@                                             £',
+            '£                                                         £',
+            '£                                                         £',
+            '£    xx                               xxxxxx              £',
+            '£                                                         £',
+            '£                                                         £',
+            '£        @x&x@                                            £',
+            '£                                                         £',
+            '£               z   z                                     £',
+            '!!!!!!!!!!!!!!!!!!!!!!                                !!!!!',
           ]
+          
     ]
   
 // setting images to symbols which represent them when in building map/level
@@ -169,7 +190,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
     }
   })
 
-  // player gets a mushroom, 6 is amount of seconds 
+  // player gets a mushroom, 6 is amount of time(seconds) 
   player.collides('mushroom', (m) => {
     destroy(m)
     player.biggify(6)
@@ -191,6 +212,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
   player.collides('dangerous', (d) => {
     if (isJumping) {
       destroy(d)
+      gameLevel.spawn('$', d.gridPos.sub(5, 0))
     } else {
       go('lose', { score: scoreLabel.value})
     }
@@ -241,11 +263,15 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
 // if player falls or dies
 scene('lose', ({ score }) => {
     add([text('Score: ' + score, 18), origin('center'), pos(width()/2, height()/ 2)])
-    if (score < 5) {
-        add([text('Better luck next time!', 14), origin('center'), pos(width()/2, height()/ 3)])
+    if (score < 6) {
+        add([text('Better luck next time!', 16), origin('center'), pos(width()/2, height()/ 3)])
+    } else if (score < 11) {
+        add([text('Not bad. Keep trying!', 16), origin('center'), pos(width()/2, height()/ 3)])
     } else {
-        add([text('Nicely done!', 14), origin('center'), pos(width()/2, height()/ 3)])
+        add([text('Super Impressive!', 16), origin('center'), pos(width()/2, height()/ 3)])
     }
   })
+
+ 
 
 start('game', { level: 0, score: 0})
