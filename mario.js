@@ -77,7 +77,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
             '£                                                         £',
             '£                         z                               £',
             '£                xx  xxxx                                 £',
-            '£                            xxx       &          xxx     £',
+            '£                            xxx       &          xx      £',
             '£         @x@                                             £',
             '£                                                         £',
             '£                                                         £',
@@ -268,7 +268,7 @@ scene('lose', ({ score }) => {
     } else if (score < 11) {
         add([text('Not bad. Keep trying!', 16), origin('center'), pos(width()/2, height()/ 3)])
     } else {
-        add([text('Super Impressive!', 16), origin('center'), pos(width()/2, height()/ 3)])
+        add([text('Super Impressive!', 24), origin('center'), pos(width()/2, height()/ 3)])
     }
   })
 
