@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "gh-pages": "^3.2.3",
+    "node": "^17.1.0"
+  },
+  "name": "mario-kaboom",
+  "version": "1.0.0",
+  "main": "mario.js",
+  "devDependencies": {},
+  "scripts": {
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KarstenJep/Mario-Kaboom.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KarstenJep/Mario-Kaboom.js/issues"
+  },
+  "homepage": "https://github.com/KarstenJep/Mario-Kaboom.js",
+  "description": ""
+}
