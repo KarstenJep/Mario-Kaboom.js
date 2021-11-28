@@ -1,4 +1,5 @@
 {
+  "name": "https://github.com/KarstenJep/Mario-Kaboom.js",
   "dependencies": {
     "gh-pages": "^3.2.3",
     "node": "^17.1.0"
