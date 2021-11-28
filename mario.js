@@ -272,6 +272,4 @@ scene('lose', ({ score }) => {
     }
   })
 
- 
-
 start('game', { level: 0, score: 0})
